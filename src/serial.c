@@ -2,12 +2,12 @@
 #include <sys/stat.h>
 
 int main(int argc, char *argv[]) {
-    if(argc != 1) {
+    if(argc != 2) {
         log_error("wrong number of arguments!");
         return -1;
     }
 
-    printf("[I]: looking for serial port %s\n", argv[0]);
+    printf("[I]: looking for serial port %s\n", argv[1]);
     struct stat buffer;
     int exist = stat(argv[0], &buffer);
     if(exist != 0) {
