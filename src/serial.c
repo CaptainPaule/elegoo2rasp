@@ -7,7 +7,7 @@ int main(int argc, char *argv[]) {
         return -1;
     }
 
-    log_info("looking for serial port %s", argv[0]);
+    printf("[I]: looking for serial port %s\n", argv[0]);
     struct stat buffer;
     int exist = stat(argv[0], &buffer);
     if(exist != 0) {
