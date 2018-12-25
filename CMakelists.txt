@@ -1,0 +1,12 @@
+CMAKE_MINIMUM_REQUIRED_VERSION(3.0)
+PROJECT(Serial)
+
+file(GLOB SOURCE "src/.c")
+file(GLOB HEADER "header/*.h")
+
+include_directories(header)
+add_custom_target(headers SOURCES ${HEADER})
+add_executable(Serial ${SOURCES})
+
+
+link_directories(/usr/local/lib)
