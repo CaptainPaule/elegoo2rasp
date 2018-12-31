@@ -15,6 +15,22 @@
 
 static PyObject *SerialError;
 
+int serialWritebytes( int fd, uint8_t *b, int len) {
+    	int n = write(fd, &b, len);
+    	if(n != len)
+        	return -1;
+
+    	return n;
+}
+
+int serialReadBytes(int fd, uint8_t *buf, int len) {
+	int r = read(fd, buf, len);
+	if(r != len){
+		return -1;
+	}
+
+	return r;
+}
 
 int recv(int fd, DATAFRAME *data) {
 	int *size = NULL;
@@ -25,16 +41,12 @@ int recv(int fd, DATAFRAME *data) {
 	int read = serialReadBytes(fd, sizeBuffer, sizeof(int));
 	size = (int*) sizeBuffer;
 
-	if(read == -1) {
+	if(*size == -1) {
 		return -1;
 	}
 
 	// read data blob
 	read = serialReadBytes(fd, dataBuffer, *size);
-
-	if(read == -1) {
-		return -1;
-	}
 	data = (DATAFRAME*) dataBuffer;
 
 	return read;
@@ -42,17 +54,18 @@ int recv(int fd, DATAFRAME *data) {
 
 int serialResetDevice(int fd) {
 	char *str = "A";
-	uint8_t *b = (uint8_t*) str;
-	int writtenBytes = serialWriteBytes(fd, b, 1);
+	uint8_t  *b = (uint8_t*)str;
+	int writtenBytes = serialWritebytes(fd, b, 1);
 	return writtenBytes;
 }
 
-int serialInit(const char* serialport, int baudrate) {
+int serialInit(const char* serialport, int baudrate)
+{
     struct termios toptions;
     int fd;
 
     fd = open(serialport, O_RDWR | O_NONBLOCK );
-    if (fd == -1) {
+    if (fd == -1)  {
         perror("serialInit: Unable to open port ");
         return -1;
     }
@@ -133,29 +146,13 @@ int serialClose( int fd ) {
     	return close( fd );
 }
 
-int serialWriteBytes( int fd, uint8_t *b, int len) {
-    	int n = write(fd, &b, len);
-    	if(n != len)
-        	return -1;
-
-    	return n;
-}
-
-int serialReadBytes(int fd, uint8_t *buf, int len) {
-	int r = read(fd, buf, len);
-	if(r != len){
-		return -1;
-	}
-
-	return r;
-}
 
 static PyObject* serial_init(PyObject *self, PyObject *args) {
 	const char *port;
-	int baudrate = 9600;
+	int baudrate;
 	int err = 0;
 
-	if(!PyArg_ParseTuple(args, "si", &port, &baudrate)) {
+	if(!PyArg_ParseTuple(args, "si", &port, baudrate)) {
 		return NULL;
 	}
 
@@ -168,14 +165,14 @@ static PyObject* serial_init(PyObject *self, PyObject *args) {
 }
 
 static PyObject* serial_reset(PyObject *self, PyObject *args) {
-	int fd = 0;
+	int *fd;
 	int err = 0;
 
 	if(!PyArg_ParseTuple(args, "i", &fd)) {
 		return NULL;
 	}
 
-	err = serialResetDevice(fd);
+	err = serialResetDevice(*fd);
 	if(err == -1) {
 		PyErr_SetString(SerialError, "can not reset device");
 		return NULL;
@@ -184,15 +181,15 @@ static PyObject* serial_reset(PyObject *self, PyObject *args) {
 }
 
 static PyObject* serial_recv(PyObject *self, PyObject *args) {
-	int fd = 0;
+	int *fd = malloc(sizeof(int));
 	DATAFRAME *dat = malloc(sizeof(DATAFRAME));
 	int err = 0;
 
-	if(!PyArg_ParseTuple(args, "i", &fd)) {
+	if(!(args, "i", &fd)) {
 		return NULL;
 	}
 
-	err = recv(fd, dat);
+	err =  recv(*fd, dat);
 	if(err == -1) {
 		PyErr_SetString(SerialError, "can not read from device");
 		return NULL;
