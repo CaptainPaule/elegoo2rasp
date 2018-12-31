@@ -149,14 +149,14 @@ int serialReadBytes(int fd, uint8_t *buf, int len) {
 
 static PyObject* serial_init(PyObject *self, PyObject *args) {
 	const char *port;
-	int *baudrate;
+	int baudrate;
 	int err = 0;
 
-	if(!PyArg_ParseTuple(args, "si", &port, &baudrate)) {
+	if(!PyArg_ParseTuple(args, "si", &port, baudrate)) {
 		return NULL;
 	}
 
-	err = serialInit(port, *baudrate);
+	err = serialInit(port, baudrate);
 	if(err == -1) {
 		PyErr_SetString(SerialError, "can not open device");
 		return NULL;
