@@ -12,26 +12,6 @@
 #define DATASIZE 8
 
 
-static PyMethodDef SerialMethods[] = {
-	{"init", serial_init, METH_VARARGS,
-		"Initialize serial connection to elegoo device."},
-
-	{"recv", serial_resv, METH_VARARGS,
-		"receive data from serial port."},
-
-	{"reset", serial_reset, METH_VARARGS,
-		"reset device."},
-
-	{NULL, NULL, 0, NULL}
-};
-
-static struct PyModuleDef serialmodule = {
-	PyModuleDef_HEAD_INIT,
-	"serial",
-	NULL,
-	-1,
-	SerialMethods
-};
 
 static PyObject *SerialError;
 
@@ -221,3 +201,24 @@ static PyObject* serial_recv(PyObject *self, PyObject *args) {
 			    &dat->temp.std
 			    );
 }
+
+static PyMethodDef SerialMethods[] = {
+	{"init", serial_init, METH_VARARGS,
+		"Initialize serial connection to elegoo device."},
+
+	{"recv", serial_recv, METH_VARARGS,
+		"receive data from serial port."},
+
+	{"reset", serial_reset, METH_VARARGS,
+		"reset device."},
+
+	{NULL, NULL, 0, NULL}
+};
+
+static struct PyModuleDef serialmodule = {
+	PyModuleDef_HEAD_INIT,
+	"serial",
+	NULL,
+	-1,
+	SerialMethods
+};

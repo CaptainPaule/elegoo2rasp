@@ -18,9 +18,4 @@ int serialResetDevice(int fd);
 // communication related functions
 int recv(int fd, DATAFRAME *data);
 
-// interfaceing related functions
-//static PyObject* serial_init(PyObject *self, PyObject *args);
-//static PyObject* serial_recv(PyObject *self, PyObject *args);
-//static PyObject* serial_reset(PyObject *self, PyObject *args);
-
 #endif
