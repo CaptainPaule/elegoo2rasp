@@ -15,21 +15,6 @@
 
 static PyObject *SerialError;
 
-PyMODINIT_FUNC PyInit_serial(void) {
-	return PyModule_Create(&serialmodule);clear
-}
-
-PyMODINIT_FUNC PyInit_serial(void) {
-	PyObject *m = PyModule_Create(&serialmodule);
-	if(m == NULL) {
-		return NULL;
-	}
-
-	SerialError = PyErrException("spam.error", NULL, NULL);
-	Py_INCREF(SerialError);
-	PyModule_AddObject(m, "error", SerialError);
-	return m;
-}
 
 int recv(int fd, DATAFRAME *data) {
 	int *size = NULL;
@@ -222,3 +207,19 @@ static struct PyModuleDef serialmodule = {
 	-1,
 	SerialMethods
 };
+
+PyMODINIT_FUNC PyInit_serial(void) {
+	return PyModule_Create(&serialmodule);
+}
+
+PyMODINIT_FUNC PyInit_serial(void) {
+	PyObject *m = PyModule_Create(&serialmodule);
+	if(m == NULL) {
+		return NULL;
+	}
+
+	SerialError = PyErrException("spam.error", NULL, NULL);
+	Py_INCREF(SerialError);
+	PyModule_AddObject(m, "error", SerialError);
+	return m;
+}
