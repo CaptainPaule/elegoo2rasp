@@ -164,6 +164,22 @@ static PyObject* serial_init(PyObject *self, PyObject *args) {
 	return Py_BuildValue("i", err);
 }
 
+static PyObject* serial_reset(PyObject *self, PyObject *args) {
+	int *fd;
+	int err = 0;
+
+	if(!PyArg_ParseTuple(args, "i", &fd)) {
+		return NULL;
+	}
+
+	err = serialResetDevice(*fd);
+	if(err == -1) {
+		PyErr_SetString(SerialError, "can not reset device");
+		return NULL;
+	}
+	return Py_BuildValue("i", err);
+}
+
 static PyObject* serial_recv(PyObject *self, PyObject *args) {
 	int *fd = malloc(sizeof(int));
 	DATAFRAME *dat = malloc(sizeof(DATAFRAME));
@@ -207,10 +223,6 @@ static struct PyModuleDef serialmodule = {
 	-1,
 	SerialMethods
 };
-
-PyMODINIT_FUNC PyInit_serial(void) {
-	return PyModule_Create(&serialmodule);
-}
 
 PyMODINIT_FUNC PyInit_serial(void) {
 	PyObject *m = PyModule_Create(&serialmodule);
