@@ -218,7 +218,7 @@ PyMODINIT_FUNC PyInit_serial(void) {
 		return NULL;
 	}
 
-	SerialError = PyErrException("spam.error", NULL, NULL);
+	SerialError = PyErr_NewException("serial.error", NULL, NULL);
 	Py_INCREF(SerialError);
 	PyModule_AddObject(m, "error", SerialError);
 	return m;
