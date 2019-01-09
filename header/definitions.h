@@ -1,11 +1,5 @@
 typedef struct {
-	float measure_time;
-	unsigned int num;
+	size_t num;
 	float mean;
 	float std;
 } DATA;
-
-typedef struct {
-	int timestamp;
-	DATA temp;
-} DATAFRAME;

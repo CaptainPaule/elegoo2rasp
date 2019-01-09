@@ -9,10 +9,6 @@
 #include <sys/ioctl.h>
 #include <stdlib.h>
 
-#define DATASIZE 8
-
-
-
 static PyObject *SerialError;
 
 int serialWritebytes( int fd, uint8_t *b, int len) {
@@ -53,7 +49,7 @@ int recv(int fd, DATAFRAME *data) {
 }
 
 int serialResetDevice(int fd) {
-	char *str = "A";
+	char *str = "r";
 	uint8_t  *b = (uint8_t*)str;
 	int writtenBytes = serialWritebytes(fd, b, 1);
 	return writtenBytes;
@@ -182,7 +178,7 @@ static PyObject* serial_reset(PyObject *self, PyObject *args) {
 
 static PyObject* serial_recv(PyObject *self, PyObject *args) {
 	int *fd = malloc(sizeof(int));
-	DATAFRAME *dat = malloc(sizeof(DATAFRAME));
+	DATA *dat = malloc(sizeof(DATA));
 	int err = 0;
 
 	if(!(args, "i", &fd)) {
@@ -197,7 +193,7 @@ static PyObject* serial_recv(PyObject *self, PyObject *args) {
 
 	// build python dict
 	return Py_BuildValue("{s:i, s:f, s:f}",
-			    &dat->timestamp,
+			    &dat->num,
 			    &dat->temp.mean,
 			    &dat->temp.std
 			    );
